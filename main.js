@@ -1,28 +1,33 @@
-function preload() {}
+var object = {};
+
+function preload() { }
 
 function setup() {
     canvas = createCanvas(700, 450);
     canvas.parent('canvas_holder');
     video = createCapture(VIDEO);
     video.hide();
+    detector = ml5.objectDetector('cocossd', modelLoaded)
 }
 
 function draw() {
-    image(video, 0,0,700,450)
-    fill('coral');
-            // var txt = objects[i].label;
-            // text(txt, objects[i].x + 10, objects[i].y +10);
-            // noFill();
-            // stroke('coral')
-            // rect(objects[i].x, objects[i].y, objects[i].width, objects[i].height)
-            // strokeWeight(2)
-            // rect(objects[i].x+10, objects[i].y+18, 100, 20, 20)
-            // var accuracy = floor(objects[i].confidence * 100);
-            // rect(objects[i].x+10, objects[i].y+18, 100, 20, 20)
-            // fill('coral')
-            // rect(objects[i].x+10, objects[i].y+18, accuracy, 20, 20, 0, 0, 20)
-            // fill('#fff')
-            // text(String(accuracy)+'%', objects[i].x+20, objects[i].y+28)
+    if (object != {}) {
+        image(video, 0, 0, 700, 450)
+        fill('coral');
+        var txt = object.label;
+        text(txt, object.x + 10, object.y + 10);
+        noFill();
+        stroke('coral')
+        rect(object.x, object.y, object.width, object.height)
+        strokeWeight(2)
+        rect(object.x + 10, object.y + 18, 100, 20, 20)
+        var accuracy = floor(object.confidence * 100);
+        rect(object.x + 10, object.y + 18, 100, 20, 20)
+        fill('coral')
+        rect(object.x + 10, object.y + 18, accuracy, 20, 20, 0, 0, 20)
+        fill('#fff')
+        text(String(accuracy) + '%', object.x + 20, object.y + 28)
+    }
 }
 
 function search() {
@@ -34,9 +39,25 @@ function modelLoaded() {
 }
 
 function gotResults(error, results) {
-    if(error) {
+    if (error) {
         console.error(error);
     } else {
         console.log(results);
+        for (let j = 0; j < results.length; j++) {
+            if (results[j] == document.getElementById('search_box').value) {
+
+                if (j = results.length - 1) {
+                    object = results[j];
+                    break;
+                } else {
+                    if(results[j] == document.getElementById('search_box').value) {
+                        object = results[j];
+                    break;
+                    } else {
+                        document.getElementById('status').innerHTML = 'Object not Found.'
+                    }
+                }
+            }
+        }
     }
 }
